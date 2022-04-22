@@ -1,15 +1,37 @@
+<script context="module">
+  import { images } from "./store/ImageStore";
+  //init image store
+  //TODO: get image data from the core at startup
+  //TODO: scale images for display on pi
+  images.set(["/testdata/1.png", "/testdata/2.png"]);
+</script>
+
 <script>
-  export let name;
+  import Carousel from "svelte-carousel";
+  //get images from core
+  //Probably want to keep them in a Store
 </script>
 
 <main>
-  <h1>Hello {name}!</h1>
+  <Carousel
+    autoplay
+    dots={false}
+    autoplayDuration={5000}
+    duration={1000}
+    arrows={false}
+    autoplayProgressVisible
+    timingFunction="ease-in"
+    pauseOnFocus
+  >
+    {#each $images as src}
+      <img {src} alt="Lovely family" />
+    {/each}
+  </Carousel>
 </main>
 
 <style>
   main {
     text-align: center;
-    padding: 1em;
     max-width: 240px;
     margin: 0 auto;
   }
@@ -25,5 +47,9 @@
     main {
       max-width: none;
     }
+  }
+
+  .Carousel {
+    width: 300px;
   }
 </style>
