@@ -1,15 +1,9 @@
 <script lang="ts">
-    let data: Blob;
-    export let url: string;
+  export let data: Blob;
 
-    let src;
-    if (data) {
-        src = URL.createObjectURL(data);
-    } else if (url) {
-        src = url;
-    }
+  let src = URL.createObjectURL(data);
 </script>
 
 <div class="carouselItem">
-    <img {src} alt="Lovely family" />
+  <img {src} alt="Lovely family" />
 </div>
