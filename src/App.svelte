@@ -8,20 +8,34 @@
   import MessageItem from "./components/Message.svelte";
   import Carousel from "svelte-carousel";
   import { onMount } from "svelte";
-  import Message from "./components/Message.svelte";
+  // import Message from "./components/Message.svelte";
 
-  let imagesMax = 0;
-  let messagesMax = 1;
-  $: {
-    const ratio = $images.length / $messages.length;
-    imagesMax = Math.floor(ratio);
-  }
+  // let imagesMax = 0;
+  // let messagesMax = 1;
+  // $: {
+  //   const ratio = $images.length / $messages.length;
+  //   imagesMax = Math.floor(ratio);
+  // }
   let carousel;
+
   onMount(() => {
     const socket = new WebSocket("ws://localhost:9000");
     socket.addEventListener("open", (e) => {
       console.log(`Opened websocket connection`);
-      socket.send("start");
+      //sync for 10 minutes, dont for 50 minutes
+      let start = () => {
+        socket.send("start");
+        setTimeout(() => {
+          stop();
+        }, 600000);
+      };
+      let stop = () => {
+        socket.send("stop");
+        setTimeout(() => {
+          start();
+        }, 3000000);
+      };
+      start();
     });
     socket.addEventListener("error", (e) => console.log(`Websocket error`));
 
@@ -45,14 +59,13 @@
 
 <main>
   {#key $images}
-    {#key messages}
+    {#key $messages}
       <Carousel
         autoplay
         dots={false}
         autoplayDuration={5000}
         duration={1000}
         arrows={false}
-        autoplayProgressVisible
         timingFunction="ease-in"
         pauseOnFocus
         bind:this={carousel}
