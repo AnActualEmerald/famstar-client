@@ -63,8 +63,8 @@
       <Carousel
         autoplay
         dots={false}
-        autoplayDuration={5000}
-        duration={1000}
+        autoplayDuration={30000}
+        duration={2000}
         arrows={false}
         timingFunction="ease-in"
         pauseOnFocus
