@@ -47,15 +47,18 @@
       "active": false
     },
     "allowlist": {
-      "all": true
+      "http": {
+        "scope": ["http://localhost:9000", "ws://localhost:9000"]
+      }
     },
     "windows": [
       {
         "title": "famstar-client",
         "width": 800,
         "height": 600,
+        "alwaysOnTop": true,
         "resizable": true,
-        "fullscreen": false
+        "fullscreen": true
       }
     ],
     "security": {
