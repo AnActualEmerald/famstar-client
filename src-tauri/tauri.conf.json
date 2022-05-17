@@ -28,7 +28,9 @@
       "shortDescription": "",
       "longDescription": "",
       "deb": {
-        "depends": []
+        "files": {
+          "usr/lib/assets": "../public"
+        }
       },
       "macOS": {
         "frameworks": [],
