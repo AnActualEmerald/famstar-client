@@ -1,11 +1,11 @@
 [package]
-name = "app"
-version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+name = "famstar-client"
+version = "0.1.2"
+description = "The client for my famstar project"
+authors = ["AnActualEmerald"]
 license = ""
 repository = ""
-default-run = "app"
+default-run = "famstar-client"
 edition = "2021"
 rust-version = "1.57"
 

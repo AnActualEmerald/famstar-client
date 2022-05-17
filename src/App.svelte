@@ -64,9 +64,8 @@
         autoplay
         dots={false}
         autoplayDuration={30000}
-        duration={2000}
+        duration={5000}
         arrows={false}
-        timingFunction="ease-in"
         pauseOnFocus
         bind:this={carousel}
       >

@@ -16,5 +16,9 @@
   }
   p {
     margin-top: 240px;
+    color: white;
+    /* background-color: darkslategray; */
+    /* border-radius: 10px; */
+    /* padding: 20px; */
   }
 </style>

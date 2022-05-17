@@ -1,7 +1,7 @@
 {
   "package": {
     "productName": "famstar-client",
-    "version": "0.1.0"
+    "version": "0.1.2"
   },
   "build": {
     "distDir": "../public",
@@ -58,7 +58,6 @@
         "title": "famstar-client",
         "width": 800,
         "height": 600,
-        "alwaysOnTop": true,
         "resizable": true,
         "fullscreen": true
       }
