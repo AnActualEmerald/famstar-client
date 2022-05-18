@@ -22,9 +22,9 @@
         "icons/icon.ico"
       ],
       "resources": [],
-      "externalBin": [],
+      "externalBin": ["bin/syncer"],
       "copyright": "",
-      "category": "DeveloperTool",
+      "category": "Utility",
       "shortDescription": "",
       "longDescription": "",
       "deb": {
@@ -51,6 +51,13 @@
     "allowlist": {
       "http": {
         "scope": ["http://localhost:9000", "ws://localhost:9000"]
+      },
+      "fs": {
+        "all": true
+      },
+      "shell": {
+        "sidecar": true,
+        "scope": [ {"name":"bin/syncer", "sidecar":true} ]
       }
     },
     "windows": [
