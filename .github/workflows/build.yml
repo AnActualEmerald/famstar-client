@@ -1,0 +1,58 @@
+name: Rust
+
+on:
+  push:
+    branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+  
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ubuntu-latest]
+    
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+    - uses: actions/checkout@v3
+      with: 
+        githubToken: ${{ secrets.GITHUB_TOKEN }}
+    - name: Setup deno
+      uses: denoland/setup-deno@v1.1.0
+      
+    - name: Build syncer bin
+      run: |
+        mkdir ./src-tauri/bin
+        deno compile --allow-read --allow-write --allow-env --allow-net ./famstar-client-sync/app.ts
+        mv app ./src-tauri/bin
+        deno run --allow-read --allow-write rename_bin.js
+        
+    - name: Setup node    
+      uses: actions/setup-node@v3.2.0
+      
+    - name: Build frontend
+      run: |
+        npm ci
+        npm run build
+    
+    - name: Build tauri package
+      uses: tauri-apps/tauri-action@v0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tagName: v__VERSION__
+        releaseName: "Famstar-client v__VERSION__"
+        releaseBody: "See assets to download this version" 
+        releaseDraft: true
+        prerelease: false
+    
+    
+    
+    
+    
+    
+    
