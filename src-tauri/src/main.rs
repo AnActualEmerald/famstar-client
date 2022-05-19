@@ -7,8 +7,8 @@ use tauri::api::process::{Command, CommandEvent};
 
 fn main() {
     tauri::Builder::default()
-        .setup(|app| {
-            let (mut rx, mut child) = Command::new_sidecar("syncer")
+        .setup(|_app| {
+            let (mut rx, mut _child) = Command::new_sidecar("syncer")
                 .expect("failed to create syncer sidecar")
                 .spawn()
                 .expect("failed to start syncer sidecar");

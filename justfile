@@ -1,5 +1,6 @@
 bundles := "./src-tauri/target/release/bundle"
 
+#Build syncer binary and move it to the correct folder
 build-sync:
     -mkdir ./src-tauri/bin
     deno compile --allow-read --allow-write --allow-env --allow-net ./famstar-client-sync/app.ts
@@ -12,5 +13,6 @@ build: build-sync
     -cargo tauri build
     cp -r {{bundles}} ./bundles
     
+#Run tauri dev, frontend dev server should be started separately
 dev: build-sync
     cargo tauri dev

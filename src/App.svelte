@@ -37,7 +37,7 @@
       };
       start();
     });
-    socket.addEventListener("error", (e) => console.log(`Websocket error`));
+    socket.addEventListener("error", (_) => console.log(`Websocket error`));
 
     socket.addEventListener("message", (e) => {
       console.log("Recieved message");
