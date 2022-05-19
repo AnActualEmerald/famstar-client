@@ -19,7 +19,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: uraimo/run-on-arch-action@v2.2.0
       with: 
         githubToken: ${{ secrets.GITHUB_TOKEN }}
     - name: Setup deno
@@ -36,7 +35,9 @@ jobs:
       uses: actions/setup-node@v3.2.0
       
     - name: Build frontend
-      run: npm run build
+      run: |
+        npm ci
+        npm run build
     
     - name: Build tauri package
       uses: tauri-apps/tauri-action@v0
