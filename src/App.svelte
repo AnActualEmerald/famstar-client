@@ -1,6 +1,6 @@
 <script context="module" lang="ts">
-  import { images } from "./store/ImageStore";
-  import { messages } from "./store/MessageStore";
+  import { images, Image } from "./store/ImageStore";
+  import { messages, Message } from "./store/MessageStore";
 </script>
 
 <script lang="ts">
@@ -16,11 +16,19 @@
   //   const ratio = $images.length / $messages.length;
   //   imagesMax = Math.floor(ratio);
   // }
-  let carousel;
+  //let carousel;
 
   onMount(() => {
+    function toUint8Array(input: string): Uint8Array {
+      return new Uint8Array(
+        input.split("").map(function (c) {
+          return c.charCodeAt(0);
+        })
+      );
+    }
+
     const socket = new WebSocket("ws://localhost:9000");
-    socket.addEventListener("open", (e) => {
+    socket.addEventListener("open", (_) => {
       console.log(`Opened websocket connection`);
       //sync for 10 minutes, dont for 50 minutes
       let start = () => {
@@ -42,17 +50,43 @@
     socket.addEventListener("message", (e) => {
       console.log("Recieved message");
       //handle receiving in messages and images
-      try {
-        const j = JSON.parse(e.data);
+      const j = JSON.parse(e.data);
 
-        messages.update((curr): string[] => {
-          return [j.content as string, ...curr];
+      if (j.type === "message") {
+        messages.update((curr): Message[] => {
+          return [
+            { path: j.path as string, content: j.content as string },
+            ...curr,
+          ];
         });
-      } catch {
-        images.update((curr): Blob[] => {
-          return [e.data as Blob, ...curr];
+      } else if (j.type === "image") {
+        images.update((curr): Image[] => {
+          let raw = toUint8Array(atob(j.content as string));
+          return [
+            { path: j.path as string, content: new Blob([raw]) },
+            ...curr,
+          ];
         });
+      } else if (j.type === "remove") {
+        if (j.path.startsWith("image")) {
+          images.update((curr): Image[] => {
+            return curr.filter((e) => e.path === j.path);
+          });
+        } else {
+          messages.update((curr): Message[] => {
+            return curr.filter((e) => e.path === j.path);
+          });
+        }
       }
+
+      //  messages.update((curr): string[] => {
+      //    return [j.content as string, ...curr];
+      //  });
+      //} catch {
+      //  images.update((curr): Blob[] => {
+      //    return [e.data as Blob, ...curr];
+      //  });
+      // }
     });
   });
 </script>
@@ -67,13 +101,12 @@
         duration={5000}
         arrows={false}
         pauseOnFocus
-        bind:this={carousel}
       >
         {#each $images as data}
-          <ImageItem {data} />
+          <ImageItem data={data.content} />
         {/each}
         {#each $messages as msg}
-          <MessageItem {msg} />
+          <MessageItem msg={msg.content} />
         {/each}
       </Carousel>
     {/key}

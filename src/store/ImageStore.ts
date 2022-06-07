@@ -1,3 +1,7 @@
 import { writable } from "svelte/store";
 
-export const images = writable<Blob[]>([]);
+export type Image = {
+  path: string;
+  content: Blob;
+};
+export const images = writable<Image[]>([]);

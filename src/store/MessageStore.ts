@@ -1,3 +1,7 @@
 import { writable } from "svelte/store";
 
-export const messages = writable<string[]>([]);
+export type Message = {
+  path: string;
+  content: string;
+};
+export const messages = writable<Message[]>([]);
