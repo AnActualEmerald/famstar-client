@@ -70,11 +70,11 @@
       } else if (j.type === "remove") {
         if (j.path.startsWith("image")) {
           images.update((curr): Image[] => {
-            return curr.filter((e) => e.path === j.path);
+            return curr.filter((e) => e.path !== j.path);
           });
         } else {
           messages.update((curr): Message[] => {
-            return curr.filter((e) => e.path === j.path);
+            return curr.filter((e) => e.path !== j.path);
           });
         }
       }
