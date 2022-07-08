@@ -10,7 +10,7 @@ build-sync:
 #Build release packages
 build: build-sync
     npm run build
-    -cargo tauri build
+    -cargo tauri build -b deb
     cp -r {{bundles}} ./bundles
     
 #Run tauri dev, frontend dev server should be started separately

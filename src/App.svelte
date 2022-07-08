@@ -8,6 +8,12 @@
   import MessageItem from "./components/Message.svelte";
   import Carousel from "svelte-carousel";
   import { onMount } from "svelte";
+  // import { listen } from "@tauri-apps/api/event";
+  import { invoke } from "@tauri-apps/api/tauri";
+
+  const log = async (msg) => {
+    await invoke("log", { msg });
+  };
   // import Message from "./components/Message.svelte";
 
   // let imagesMax = 0;
@@ -18,7 +24,8 @@
   // }
   //let carousel;
 
-  onMount(() => {
+  onMount(async () => {
+    await log("App mounted");
     function toUint8Array(input: string): Uint8Array {
       return new Uint8Array(
         input.split("").map(function (c) {
@@ -27,67 +34,79 @@
       );
     }
 
-    const socket = new WebSocket("ws://localhost:9000");
-    socket.addEventListener("open", (_) => {
-      console.log(`Opened websocket connection`);
-      //sync for 10 minutes, dont for 50 minutes
-      let start = () => {
-        socket.send("start");
+    function init_socket(socket: WebSocket) {
+      socket.addEventListener("open", async (_) => {
+        await log("Opened websocket connection");
+        console.log(`Opened websocket connection`);
+        //sync for 10 minutes, dont for 50 minutes
+        let start = () => {
+          socket.send("start");
+          setTimeout(() => {
+            stop();
+          }, 600000);
+        };
+        let stop = () => {
+          socket.send("stop");
+          setTimeout(() => {
+            start();
+          }, 3000000);
+        };
+        start();
+      });
+      socket.addEventListener("error", async (_) => {
+        await log("Got socket error, retrying...");
         setTimeout(() => {
-          stop();
-        }, 600000);
-      };
-      let stop = () => {
-        socket.send("stop");
-        setTimeout(() => {
-          start();
-        }, 3000000);
-      };
-      start();
-    });
-    socket.addEventListener("error", (_) => console.log(`Websocket error`));
+          socket = new WebSocket("ws://localhost:9000");
+          init_socket(socket);
+        }, 5000);
+        console.log(`Websocket error`);
+      });
 
-    socket.addEventListener("message", (e) => {
-      console.log("Recieved message");
-      //handle receiving in messages and images
-      const j = JSON.parse(e.data);
+      socket.addEventListener("message", (e) => {
+        console.log("Recieved message");
+        //handle receiving in messages and images
+        const j = JSON.parse(e.data);
 
-      if (j.type === "message") {
-        messages.update((curr): Message[] => {
-          return [
-            { path: j.path as string, content: j.content as string },
-            ...curr,
-          ];
-        });
-      } else if (j.type === "image") {
-        images.update((curr): Image[] => {
-          let raw = toUint8Array(atob(j.content as string));
-          return [
-            { path: j.path as string, content: new Blob([raw]) },
-            ...curr,
-          ];
-        });
-      } else if (j.type === "remove") {
-        if (j.path.startsWith("image")) {
-          images.update((curr): Image[] => {
-            return curr.filter((e) => e.path !== j.path);
-          });
-        } else {
+        if (j.type === "message") {
           messages.update((curr): Message[] => {
-            return curr.filter((e) => e.path !== j.path);
+            return [
+              { path: j.path as string, content: j.content as string },
+              ...curr,
+            ];
           });
+        } else if (j.type === "image") {
+          images.update((curr): Image[] => {
+            let raw = toUint8Array(atob(j.content as string));
+            return [
+              { path: j.path as string, content: new Blob([raw]) },
+              ...curr,
+            ];
+          });
+        } else if (j.type === "remove") {
+          if (j.path.startsWith("image")) {
+            images.update((curr): Image[] => {
+              return curr.filter((e) => e.path !== j.path);
+            });
+          } else {
+            messages.update((curr): Message[] => {
+              return curr.filter((e) => e.path !== j.path);
+            });
+          }
         }
-      }
 
-      //  messages.update((curr): string[] => {
-      //    return [j.content as string, ...curr];
-      //  });
-      //} catch {
-      //  images.update((curr): Blob[] => {
-      //    return [e.data as Blob, ...curr];
-      //  });
-      // }
-    });
+        //  messages.update((curr): string[] => {
+        //    return [j.content as string, ...curr];
+        //  });
+        //} catch {
+        //  images.update((curr): Blob[] => {
+        //    return [e.data as Blob, ...curr];
+        //  });
+        // }
+      });
+    }
+
+    let socket = new WebSocket("ws://localhost:9000");
+    init_socket(socket);
   });
 </script>
 

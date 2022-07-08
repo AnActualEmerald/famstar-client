@@ -1,6 +1,6 @@
 [package]
 name = "famstar-client"
-version = "0.1.2"
+version = "0.2.0"
 description = "The client for my famstar project"
 authors = ["AnActualEmerald"]
 license = ""
@@ -12,12 +12,12 @@ rust-version = "1.57"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.0.0", features = [] }
+tauri-build = { version = "1.0.3", features = [] }
 
 [dependencies]
-serde_json = "1.0.81"
-serde = { version = "1.0.137", features = ["derive"] }
-tauri = { version = "1.0.0", features = ["fs-all", "process-command-api", "shell-sidecar"] }
+serde_json = "1.0.82"
+serde = { version = "1.0.138", features = ["derive"] }
+tauri = { version = "1.0.3", features = ["fs-all", "process-command-api", "shell-sidecar"] }
 
 [features]
 # by default Tauri runs in production mode

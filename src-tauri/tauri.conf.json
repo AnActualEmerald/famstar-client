@@ -1,7 +1,7 @@
 {
   "package": {
     "productName": "famstar-client",
-    "version": "0.1.2"
+    "version": "0.2.0"
   },
   "build": {
     "distDir": "../public",
@@ -50,7 +50,7 @@
     },
     "allowlist": {
       "http": {
-        "scope": ["http://localhost:9000", "ws://localhost:9000"]
+        "scope": ["http://localhost:9000", "ws://localhost:9000", "https://fam.greenboi.me/earthstar"]
       },
       "fs": {
         "all": true
