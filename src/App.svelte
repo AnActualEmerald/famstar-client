@@ -66,6 +66,7 @@
         console.log("Recieved message");
         //handle receiving in messages and images
         const j = JSON.parse(e.data);
+        log(`Got document: ${j}`);
 
         if (j.type === "message") {
           messages.update((curr): Message[] => {
@@ -105,7 +106,9 @@
       });
     }
 
+    await log("Attempting websocket connection...");
     let socket = new WebSocket("ws://localhost:9000");
+    await log(`socket: ${socket}`);
     init_socket(socket);
   });
 </script>

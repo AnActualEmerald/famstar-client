@@ -3,7 +3,7 @@
     windows_subsystem = "windows"
 )]
 
-use std::{fs, path::Path};
+use std::fs;
 
 use tauri::api::process::{Command, CommandEvent};
 use tauri::Manager;
@@ -25,7 +25,6 @@ fn main() {
                 .expect("Failed to emit starting event");
             tauri::async_runtime::spawn(async move {
                 while let Some(event) = rx.recv().await {
-                    println!("{:#?}", event);
                     match event {
                         CommandEvent::Stdout(line) => {
                             println!("Syncer: {}", line);

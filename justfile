@@ -11,7 +11,9 @@ build-sync:
 build: build-sync
     npm run build
     -cargo tauri build -b deb
-    cp -r {{bundles}} ./bundles
+    -rm -rf ./bundles
+    -mkdir ./bundles
+    cp -r {{bundles}}/* ./bundles
     
 #Run tauri dev, frontend dev server should be started separately
 dev: build-sync
