@@ -1,6 +1,6 @@
 [package]
 name = "famstar-client"
-version = "0.2.0"
+version = "0.3.0"
 description = "The client for my famstar project"
 authors = ["AnActualEmerald"]
 license = ""
@@ -18,6 +18,8 @@ tauri-build = { version = "1.0.3", features = [] }
 serde_json = "1.0.82"
 serde = { version = "1.0.138", features = ["derive"] }
 tauri = { version = "1.0.3", features = ["fs-all", "process-command-api", "shell-sidecar"] }
+dotenv = "0.15.0"
+dotenv_codegen = "0.15.0"
 
 [features]
 # by default Tauri runs in production mode

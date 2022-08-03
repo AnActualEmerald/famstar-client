@@ -8,7 +8,7 @@
   import MessageItem from "./components/Message.svelte";
   import Carousel from "svelte-carousel";
   import { onMount } from "svelte";
-  // import { listen } from "@tauri-apps/api/event";
+  import { listen, emit } from "@tauri-apps/api/event";
   import { invoke } from "@tauri-apps/api/tauri";
 
   const log = async (msg) => {
@@ -23,94 +23,56 @@
   //   imagesMax = Math.floor(ratio);
   // }
   //let carousel;
+  function toUint8Array(input: string): Uint8Array {
+    return new Uint8Array(
+      input.split("").map(function (c) {
+        return c.charCodeAt(0);
+      })
+    );
+  }
 
   onMount(async () => {
     await log("App mounted");
-    function toUint8Array(input: string): Uint8Array {
-      return new Uint8Array(
-        input.split("").map(function (c) {
-          return c.charCodeAt(0);
-        })
-      );
-    }
-
-    function init_socket(socket: WebSocket) {
-      socket.addEventListener("open", async (_) => {
-        await log("Opened websocket connection");
-        console.log(`Opened websocket connection`);
-        //sync for 10 minutes, dont for 50 minutes
-        let start = () => {
-          socket.send("start");
-          setTimeout(() => {
-            stop();
-          }, 600000);
-        };
-        let stop = () => {
-          socket.send("stop");
-          setTimeout(() => {
-            start();
-          }, 3000000);
-        };
-        start();
-      });
-      socket.addEventListener("error", async (_) => {
-        await log("Got socket error, retrying...");
-        setTimeout(() => {
-          socket = new WebSocket("ws://localhost:9000");
-          init_socket(socket);
-        }, 5000);
-        console.log(`Websocket error`);
-      });
-
-      socket.addEventListener("message", (e) => {
-        console.log("Recieved message");
-        //handle receiving in messages and images
-        const j = JSON.parse(e.data);
-        log(`Got document: ${j}`);
-
-        if (j.type === "message") {
+    const unlisten = await listen("sync-event", (e: any) => {
+      log("Got sync event");
+      const doc = e.payload;
+      log(`Handling sync event type ${doc.type}`);
+      if (doc.type) {
+        if (doc.type == "addImage") {
+          images.update((curr): Image[] => {
+            let raw = toUint8Array(atob(doc.content as string));
+            return [
+              { path: doc.path as string, content: new Blob([raw]) },
+              ...curr,
+            ];
+          });
+        } else if (doc.type == "addMessage") {
           messages.update((curr): Message[] => {
             return [
-              { path: j.path as string, content: j.content as string },
+              { path: doc.path as string, content: doc.content as string },
               ...curr,
             ];
           });
-        } else if (j.type === "image") {
-          images.update((curr): Image[] => {
-            let raw = toUint8Array(atob(j.content as string));
-            return [
-              { path: j.path as string, content: new Blob([raw]) },
-              ...curr,
-            ];
-          });
-        } else if (j.type === "remove") {
-          if (j.path.startsWith("image")) {
+        } else if (doc.type == "removeDoc") {
+          if (doc.path.startsWith("image")) {
             images.update((curr): Image[] => {
-              return curr.filter((e) => e.path !== j.path);
+              return curr.filter((e) => e.path !== doc.path);
             });
           } else {
             messages.update((curr): Message[] => {
-              return curr.filter((e) => e.path !== j.path);
+              return curr.filter((e) => e.path !== doc.path);
             });
           }
         }
-
-        //  messages.update((curr): string[] => {
-        //    return [j.content as string, ...curr];
-        //  });
-        //} catch {
-        //  images.update((curr): Blob[] => {
-        //    return [e.data as Blob, ...curr];
-        //  });
-        // }
-      });
-    }
-
-    await log("Attempting websocket connection...");
-    let socket = new WebSocket("ws://localhost:9000");
-    await log(`socket: ${socket}`);
-    init_socket(socket);
+      }
+    });
+    log("Ready, starting");
+    await invoke("start");
   });
+  const key = {
+    img: $images,
+    msg: $messages,
+  };
 </script>
 
 <main>
