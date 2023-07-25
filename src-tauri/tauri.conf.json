@@ -4,8 +4,8 @@
     "version": "0.3.0"
   },
   "build": {
-    "distDir": "../public",
-    "devPath": "http://localhost:8080",
+    "distDir": "../build",
+    "devPath": "http://localhost:1420",
     "beforeDevCommand": "",
     "beforeBuildCommand": ""
   },
@@ -22,14 +22,13 @@
         "icons/icon.ico"
       ],
       "resources": [],
-      "externalBin": ["bin/syncer"],
       "copyright": "",
       "category": "Utility",
       "shortDescription": "",
       "longDescription": "",
       "deb": {
         "files": {
-          "usr/lib/assets": "../public"
+          "usr/lib/assets": "../build"
         }
       },
       "macOS": {
@@ -50,14 +49,10 @@
     },
     "allowlist": {
       "http": {
-        "scope": ["http://localhost:9000", "ws://localhost:9000", "https://fam.greenboi.me/earthstar"]
+        "scope": ["http://localhost:8800", "ws://localhost:8801", "https://fam.greenboi.me", "wss://fam.greenboi.me"]
       },
       "fs": {
         "all": true
-      },
-      "shell": {
-        "sidecar": true,
-        "scope": [ {"name":"bin/syncer", "sidecar":true} ]
       }
     },
     "windows": [

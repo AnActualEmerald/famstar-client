@@ -1,11 +1,12 @@
 <script context="module" lang="ts">
-  import { images, Image } from "./store/ImageStore";
-  import { messages, Message } from "./store/MessageStore";
+  import { images } from "$lib/store/ImageStore";
+  import { messages, type Message } from "$lib/store/MessageStore";
 </script>
 
 <script lang="ts">
-  import ImageItem from "./components/Image.svelte";
-  import MessageItem from "./components/Message.svelte";
+  import ImageItem from "$lib/components/Image.svelte";
+  import MessageItem from "$lib/components/Message.svelte";
+  import type { Image }  from "$lib/store/ImageStore";
   import Carousel from "svelte-carousel";
   import { onMount } from "svelte";
   import { listen, emit } from "@tauri-apps/api/event";

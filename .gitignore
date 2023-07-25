@@ -1,5 +1,7 @@
 /node_modules/
 /public/build/
 /bundles
+/build
 .env
 .DS_Store
+.svelte-kit
