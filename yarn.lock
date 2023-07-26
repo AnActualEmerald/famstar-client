@@ -881,7 +881,7 @@ strip-indent@^3.0.0:
   dependencies:
     min-indent "^1.0.0"
 
-svelte-carousel@^1.0.17-rc4:
+svelte-carousel@^1.0.25:
   version "1.0.25"
   resolved "https://registry.yarnpkg.com/svelte-carousel/-/svelte-carousel-1.0.25.tgz#0a109455009f449242b17e3c213cbe7e9c37ef35"
   integrity sha512-vR/AbGYwlh3fgWaB5PJg+iqZFvoVCJq4JWdmlXvPtdG9TLlKJWBcoiKlMZt3MnFF7AqNW46tOH/O+uVMWQzyWQ==

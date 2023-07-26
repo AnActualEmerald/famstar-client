@@ -1,82 +1,31 @@
 <script context="module" lang="ts">
   import { images } from "$lib/store/ImageStore";
-  import { messages, type Message } from "$lib/store/MessageStore";
+  import { messages } from "$lib/store/MessageStore";
 </script>
 
 <script lang="ts">
   import ImageItem from "$lib/components/Image.svelte";
   import MessageItem from "$lib/components/Message.svelte";
-  import type { Image }  from "$lib/store/ImageStore";
   import Carousel from "svelte-carousel";
+  import { browser } from "$app/environment";
+  import { init } from "$lib/sync";
   import { onMount } from "svelte";
-  import { listen, emit } from "@tauri-apps/api/event";
-  import { invoke } from "@tauri-apps/api/tauri";
+  import { invoke } from "@tauri-apps/api";
 
-  const log = async (msg) => {
-    await invoke("log", { msg });
-  };
-  // import Message from "./components/Message.svelte";
-
-  // let imagesMax = 0;
-  // let messagesMax = 1;
-  // $: {
-  //   const ratio = $images.length / $messages.length;
-  //   imagesMax = Math.floor(ratio);
-  // }
-  //let carousel;
-  function toUint8Array(input: string): Uint8Array {
-    return new Uint8Array(
-      input.split("").map(function (c) {
-        return c.charCodeAt(0);
-      })
-    );
-  }
 
   onMount(async () => {
-    await log("App mounted");
-    const unlisten = await listen("sync-event", (e: any) => {
-      log("Got sync event");
-      const doc = e.payload;
-      log(`Handling sync event type ${doc.type}`);
-      if (doc.type) {
-        if (doc.type == "addImage") {
-          images.update((curr): Image[] => {
-            let raw = toUint8Array(atob(doc.content as string));
-            return [
-              { path: doc.path as string, content: new Blob([raw]) },
-              ...curr,
-            ];
-          });
-        } else if (doc.type == "addMessage") {
-          messages.update((curr): Message[] => {
-            return [
-              { path: doc.path as string, content: doc.content as string },
-              ...curr,
-            ];
-          });
-        } else if (doc.type == "removeDoc") {
-          if (doc.path.startsWith("image")) {
-            images.update((curr): Image[] => {
-              return curr.filter((e) => e.path !== doc.path);
-            });
-          } else {
-            messages.update((curr): Message[] => {
-              return curr.filter((e) => e.path !== doc.path);
-            });
-          }
-        }
-      }
-    });
-    log("Ready, starting");
-    await invoke("start");
+    if (browser) {
+      const target: string = await invoke('get_target');
+      const share: string = await invoke('get_share');
+      init(share, target);
+    }
   });
-  const key = {
-    img: $images,
-    msg: $messages,
-  };
+  
+
 </script>
 
 <main>
+  {#if browser}
   {#key $images}
     {#key $messages}
       <Carousel
@@ -96,6 +45,7 @@
       </Carousel>
     {/key}
   {/key}
+  {/if}
 </main>
 
 <style>
