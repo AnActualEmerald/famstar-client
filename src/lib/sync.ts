@@ -1,8 +1,9 @@
-import { Crypto, Peer, Replica, ReplicaDriverWeb } from "./earthstar.web";
+import { Peer, Replica, Syncer } from "@forge/earthstar";
+import { ReplicaDriverWeb } from "@forge/earthstar/browser";
 
-let localReplica;
-let localPeer;
-let syncer;
+let localReplica: Replica;
+let localPeer: Peer;
+let syncer: Syncer<undefined, unknown>;
 
 export const init = (address: string, server: string) => {
     localReplica = new Replica({

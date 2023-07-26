@@ -10,13 +10,11 @@ use std::env;
 use tauri::api::process::{Command, CommandEvent};
 use tauri::{Manager, Window};
 
-mod model;
-
 fn main() {
     dotenv::dotenv().ok();
-    
+
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![log, get_share])
+        .invoke_handler(tauri::generate_handler![log, get_share, get_target])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
