@@ -26,11 +26,7 @@
       "category": "Utility",
       "shortDescription": "",
       "longDescription": "",
-      "deb": {
-        "files": {
-          "usr/lib/assets": "../build"
-        }
-      },
+      "deb": {},
       "macOS": {
         "frameworks": [],
         "exceptionDomain": "",
@@ -53,6 +49,12 @@
       },
       "fs": {
         "all": true
+      },
+      "window": {
+        "setFullscreen": true,
+        "setAlwaysOnTop": true,
+        "setCursorGrab": true,
+        "setCursorVisible": true
       }
     },
     "windows": [

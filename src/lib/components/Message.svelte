@@ -9,14 +9,17 @@
 <style>
   .carouselItem {
     text-align: center;
-    display: flex;
-    /* flex-direction: column; */
-    justify-content: space-evenly;
-    height: 100%;
+    height: 100vh;
   }
+
   p {
-    margin-top: 240px;
+    position: relative;
+    top: 50vh;
+    transform: translateY(-50%);
     color: white;
+
+    user-select: none;
+
     /* background-color: darkslategray; */
     /* border-radius: 10px; */
     /* padding: 20px; */

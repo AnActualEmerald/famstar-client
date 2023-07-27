@@ -17,7 +17,7 @@ tauri-build = { version = "1.4.0", features = [] }
 [dependencies]
 serde_json = "1.0.103"
 serde = { version = "1.0.175", features = ["derive"] }
-tauri = { version = "1.4.1", features = ["fs-all", "process-command-api"] }
+tauri = { version = "1.4.1", features = [ "window-set-always-on-top", "window-set-fullscreen", "window-set-cursor-grab", "window-set-cursor-visible", "fs-all", "process-command-api"] }
 dotenv = "0.15.0"
 dotenv_codegen = "0.15.0"
 
