@@ -1,9 +1,11 @@
-import { Peer, Replica, Syncer } from "@forge/earthstar";
+import { Peer, Replica, type Syncer } from "@forge/earthstar";
 import { ReplicaDriverWeb } from "@forge/earthstar/browser";
 
 let localReplica: Replica;
 let localPeer: Peer;
 let syncer: Syncer<undefined, unknown>;
+
+let hasInit = false;
 
 const ensureConnection = (address, server) => {
     if(!syncer) {
@@ -12,7 +14,7 @@ const ensureConnection = (address, server) => {
     }
 
     const status = syncer.getStatus()[address];
-    if(status.docs.status === "aborted") {
+    if(!status || status.docs.status === "aborted") {
         syncer.cancel();
         syncer = localPeer.sync(server, true);
         return;
@@ -34,7 +36,8 @@ export const init = (address: string, server: string) => {
         ensureConnection(address, server);
     }, 1000);
 
+    hasInit = true;
 
 };
 
-export { syncer, localReplica };
+export { syncer, localReplica, hasInit };

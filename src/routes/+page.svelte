@@ -1,18 +1,14 @@
-<script context="module" lang="ts">
-  import { images, type Image } from "$lib/store/ImageStore";
-  import { messages, type Message } from "$lib/store/MessageStore";
-</script>
-
 <script lang="ts">
   import ImageItem from "$lib/components/Image.svelte";
   import MessageItem from "$lib/components/Message.svelte";
   import Carousel from "svelte-carousel";
-  import { browser } from "$app/environment";
   import { init, localReplica } from "$lib/sync";
   import { onMount } from "svelte";
+  import { messages, type Message } from "$lib/store/MessageStore";
+  import { images, type Image } from "$lib/store/ImageStore";
   import { ReplicaCache, notErr } from "@forge/earthstar";
-  import { invoke } from "@tauri-apps/api";
-  import { appWindow } from "@tauri-apps/api/window";
+  import settings from "$lib/store/settings";
+
 
   let replicaCache: ReplicaCache | null = null;
 
@@ -60,27 +56,23 @@
   };
 
   onMount(async () => {
-    if (import.meta.env.PROD) {
-      await appWindow.setAlwaysOnTop(true);
-      await appWindow.setFullscreen(true);
-      await appWindow.setCursorGrab(true);
-      await appWindow.setCursorVisible(false);
-    }
+    console.log(`Initialize sync for share ${$settings.share} at server ${$settings.target}`);
 
-    const target: string = await invoke("get_target");
-    const share: string = await invoke("get_share");
-    init(share, target);
+    if($settings.ready){
+      init($settings.share, $settings.target);
 
-    replicaCache = new ReplicaCache(localReplica);
-    replicaCache.onCacheUpdated(async () => {
+      replicaCache = new ReplicaCache(localReplica);
+      replicaCache.onCacheUpdated(async () => {
+        await updateStores();
+      });
+
       await updateStores();
-    });
-
-    await updateStores();
+    }
   });
 </script>
 
 <main>
+  {#if $settings.ready}
   {#key $images}
     {#key $messages}
       <Carousel
@@ -100,6 +92,9 @@
       </Carousel>
     {/key}
   {/key}
+  {:else}
+      <p>Client was not initialized</p>
+  {/if}
 </main>
 
 <style>
@@ -119,5 +114,10 @@
   main {
     text-align: center;
     min-height: 100%;
+  }
+  p {
+    position: relative;
+    top: 50vh;
+    transform: translateY(-50%);
   }
 </style>
