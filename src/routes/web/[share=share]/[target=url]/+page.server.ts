@@ -9,7 +9,6 @@ export const load: PageLoad = ({params}) => {
     return {
       share: params.share,
       target: params.target,
-      ready: true
     }
 };
 // </script>

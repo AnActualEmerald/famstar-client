@@ -8,6 +8,7 @@
   onMount(async () => {
     $settings.share = $page.data.share;
     $settings.target = $page.data.target;
+    $settings.ready = true;
     await goto("/", { replaceState: false });
   })
 
