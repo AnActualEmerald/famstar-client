@@ -3,12 +3,12 @@
     windows_subsystem = "windows"
 )]
 
-use std::fs;
 
-use dotenv;
+
+
 use std::env;
-use tauri::api::process::{Command, CommandEvent};
-use tauri::{Manager, Window};
+
+
 
 fn main() {
     dotenv::dotenv().ok();
